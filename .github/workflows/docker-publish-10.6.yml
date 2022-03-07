@@ -65,7 +65,7 @@ jobs:
       # Login against a Docker registry except on PR
       # https://github.com/docker/login-action
       - name: Log into registry ${{ env.REGISTRY }}
-        if: github.event_name != 'pull_request'
+        if: steps.check.outputs.needs-updating == 'true'
         uses: docker/login-action@28218f9b04b4f3f62068d7b6ce6ca5b26e35336c
         with:
           registry: ${{ env.REGISTRY }}
@@ -88,19 +88,17 @@ jobs:
         with:
           platforms: linux/amd64,linux/arm64/v8
           context: .
-          push: ${{ steps.check.outputs.needs-updating == 'true' }}
+          push: steps.check.outputs.needs-updating == 'true'
           tags: ${{ env.IMAGE_NAME }}:${{ env.MARIADB_VERSION }}
           build-args: |
             MARIADB_VERSION=${{ env.MARIADB_VERSION }}
-          #labels: ${{ steps.meta.outputs.labels }}
-        if: steps.check.outputs.needs-updating == 'true'
       # Sign the resulting Docker image digest except on PRs.
       # This will only write to the public Rekor transparency log when the Docker
       # repository is public to avoid leaking data.  If you would like to publish
       # transparency data even for private images, pass --force to cosign below.
       # https://github.com/sigstore/cosign
       - name: Sign the published Docker image
-        if: ${{ steps.check.outputs.needs-updating == 'true' }}
+        if: steps.check.outputs.needs-updating == 'true'
         env:
           COSIGN_EXPERIMENTAL: "true"
         # This step uses the identity token to provision an ephemeral certificate
