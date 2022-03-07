@@ -42,7 +42,7 @@ jobs:
         uses: lucacome/docker-image-update-checker@v1.1.0
         with:
           base-image: mariadb:${{ env.MARIADB_VERSION }}
-          image: flypenguin/homepage-builder # update for your image
+          image: ${{ github.repository }}:${{ env.MARIADB_VERSION }} # update for your image
 
       # Install the cosign tool except on PR
       # https://github.com/sigstore/cosign-installer
