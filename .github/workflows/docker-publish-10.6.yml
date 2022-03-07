@@ -88,7 +88,7 @@ jobs:
         with:
           platforms: linux/amd64,linux/arm64/v8
           context: .
-          push: ${{ github.event_name != 'pull_request' }}
+          push: ${{ steps.check.outputs.needs-updating == 'true' }}
           tags: ${{ env.IMAGE_NAME }}:${{ env.MARIADB_VERSION }}
           build-args: |
             MARIADB_VERSION=${{ env.MARIADB_VERSION }}
@@ -100,7 +100,7 @@ jobs:
       # transparency data even for private images, pass --force to cosign below.
       # https://github.com/sigstore/cosign
       - name: Sign the published Docker image
-        if: ${{ github.event_name != 'pull_request' }} && steps.check.outputs.needs-updating == 'true'
+        if: ${{ steps.check.outputs.needs-updating == 'true' }}
         env:
           COSIGN_EXPERIMENTAL: "true"
         # This step uses the identity token to provision an ephemeral certificate
