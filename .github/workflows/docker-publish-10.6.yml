@@ -89,8 +89,7 @@ jobs:
           platforms: linux/amd64,linux/arm64/v8
           context: .
           push: ${{ github.event_name != 'pull_request' }}
-          tags: |
-            ${{ env.IMAGE_NAME }}:${{ env.MARIADB_VERSION }}
+          tags: ${{ env.IMAGE_NAME }}:${{ env.MARIADB_VERSION }}
           build-args: |
             MARIADB_VERSION=${{ env.MARIADB_VERSION }}
           #labels: ${{ steps.meta.outputs.labels }}
