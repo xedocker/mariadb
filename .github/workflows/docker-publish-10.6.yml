@@ -93,7 +93,7 @@ jobs:
           build-args: |
             MARIADB_VERSION=${{ env.MARIADB_VERSION }}
           #labels: ${{ steps.meta.outputs.labels }}
-
+        if: steps.check.outputs.needs-updating == 'true'
       # Sign the resulting Docker image digest except on PRs.
       # This will only write to the public Rekor transparency log when the Docker
       # repository is public to avoid leaking data.  If you would like to publish
@@ -106,3 +106,4 @@ jobs:
         # This step uses the identity token to provision an ephemeral certificate
         # against the sigstore community Fulcio instance.
         run: cosign sign ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ steps.build-and-push.outputs.digest }}
+        if: steps.check.outputs.needs-updating == 'true'
